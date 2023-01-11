@@ -1,15 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../../app/store";
 
 interface Point {
   row: number;
   col: number;
 }
 
+export type currentActionType = "START" | "END" | "WALLS" | "NONE";
+export type algorithmsType = "DFS" | "BFS" | "DIJKSTRA";
+const ACTION_TYPES:currentActionType[] = ["START","END","WALLS"]
+
 export interface InfoState {
-  algorithm: "DFS" | "BFS" | "NONE";
+  algorithm: algorithmsType;
   start: Point;
   end: Point;
-  currentAction: "START" | "END" | "WALLS" | "NONE";
+  currentAction: currentActionType;
   rows: number;
   cols: number;
   speed: number;
@@ -19,7 +24,7 @@ export interface InfoState {
 }
 
 const initialState: InfoState = {
-  algorithm: "NONE",
+  algorithm: "BFS",
   start: {
     row: 0,
     col: 0,
@@ -41,7 +46,7 @@ export const infoSlice = createSlice({
   name: "info",
   initialState,
   reducers: {
-    setAlgorithm: (state, action: PayloadAction<"DFS" | "BFS" | "NONE">) => {
+    setAlgorithm: (state, action: PayloadAction<algorithmsType>) => {
       state.algorithm = action.payload;
     },
     setStart: (state, action: PayloadAction<Point>) => {
@@ -60,9 +65,21 @@ export const infoSlice = createSlice({
     },
     setCurrentAction: (
       state,
-      action: PayloadAction<"START" | "END" | "WALLS" | "NONE">
+      action: PayloadAction<currentActionType>
     ) => {
       state.currentAction = action.payload;
+    },
+    setNextAction : (state) => {
+      switch(state.currentAction){
+        case "START": 
+          state.currentAction = "END"
+          break
+        case "END": 
+          state.currentAction = "WALLS"
+          break
+        default:
+          break
+      }
     },
     setRows: (state, action: PayloadAction<number>) => {
       state.rows = action.payload;
@@ -90,6 +107,7 @@ export const {
   setStart,
   setEnd,
   setCurrentAction,
+  setNextAction,
   setRows,
   setCols,
   setSpeed,
@@ -99,15 +117,15 @@ export const {
 } = infoSlice.actions;
 
 //selectors 
-export const selectAlgorithm = (state: any) => state.info.algorithm;
-export const selectStart = (state: any) => state.info.start;
-export const selectEnd = (state: any) => state.info.end;
-export const selectCurrentAction = (state: any) => state.info.currentAction;
-export const selectRows = (state: any) => state.info.rows;
-export const selectCols = (state: any) => state.info.cols;
-export const selectSpeed = (state: any) => state.info.speed;
-export const selectIsRunning = (state: any) => state.info.isRunning;
-export const selectIsFinished = (state: any) => state.info.isFinished;
-export const selectIsPaused = (state: any) => state.info.isPaused;
+export const selectAlgorithm  = (state: RootState) => state.info.algorithm;
+export const selectStart = (state: RootState) => state.info.start;
+export const selectEnd = (state: RootState) => state.info.end;
+export const selectCurrentAction = (state: RootState) => state.info.currentAction;
+export const selectRows = (state: RootState) => state.info.rows;
+export const selectCols = (state: RootState) => state.info.cols;
+export const selectSpeed = (state: RootState) => state.info.speed;
+export const selectIsRunning = (state: RootState) => state.info.isRunning;
+export const selectIsFinished = (state: RootState) => state.info.isFinished;
+export const selectIsPaused = (state: RootState) => state.info.isPaused;
 
 export default infoSlice.reducer;

@@ -1,4 +1,4 @@
 import { Info, infoReducer } from "./info";
-import { Board } from "./board";
+import { Board, boardReducer } from "./board";
 
-export { Info, Board, infoReducer };
+export { Info, Board, infoReducer, boardReducer };

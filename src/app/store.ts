@@ -1,12 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
-import { infoReducer } from "../features"
+import { boardReducer, infoReducer } from "../features"
+import {updateBlockMiddleware} from "./middlewares"
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     info: infoReducer,
+    board: boardReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(updateBlockMiddleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

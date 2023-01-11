@@ -12,4 +12,7 @@
   .sub-title {
     @apply text-lg text-center py-10 font-medium;
   }
+  .container-unselected {
+
+  }
 }
