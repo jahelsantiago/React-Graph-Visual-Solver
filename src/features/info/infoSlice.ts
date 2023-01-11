@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
-interface Point {
+let ROWS = process.env.REACT_APP_ROWS;
+let REACT_APP_ROWS = ROWS ? parseInt(ROWS) : 20;
+let COLS = process.env.REACT_APP_COLS;
+let REACT_APP_COLS = COLS ? parseInt(COLS) : 20;
+
+export interface Point {
   row: number;
   col: number;
 }
@@ -26,16 +31,16 @@ export interface InfoState {
 const initialState: InfoState = {
   algorithm: "BFS",
   start: {
-    row: 0,
-    col: 0,
+    row: -1,
+    col: -1,
   },
   end: {
-    row: 0,
-    col: 0,
+    row: -1,
+    col: -1,
   },
   currentAction: "START",
-  rows: 10,
-  cols: 10,
+  rows: REACT_APP_ROWS,
+  cols: REACT_APP_COLS,
   speed: 100,
   isRunning: false,
   isFinished: false,
@@ -70,6 +75,7 @@ export const infoSlice = createSlice({
       state.currentAction = action.payload;
     },
     setNextAction : (state) => {
+      console.log(state.currentAction)
       switch(state.currentAction){
         case "START": 
           state.currentAction = "END"

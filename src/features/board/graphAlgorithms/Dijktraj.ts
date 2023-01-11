@@ -1,7 +1,7 @@
 import { graphMatrix, graphBlock } from "../boardSlice";
 import GraphAlgorithms from "./GraphAlgorithms";
 
-export default class BFS extends GraphAlgorithms {
+export default class Dijktraj extends GraphAlgorithms {
   constructor(matrix: graphMatrix) {
     super(matrix);
   }
@@ -10,7 +10,7 @@ export default class BFS extends GraphAlgorithms {
     //get the start point
     const [row, col] = this.getFirstPoint("START");
     //add the start point to the queue
-    const queue:[number, number][] = [[row, col]];
+    const queue: [number, number][] = [[row, col]];
     //create a copy of the matrix
     this.addCopy();
     //while the queue is not empty
@@ -38,5 +38,4 @@ export default class BFS extends GraphAlgorithms {
       }
     }
   }
-
 }

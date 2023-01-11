@@ -2,8 +2,9 @@ import PropTypes from "prop-types";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { AppDispatch, RootState } from "../../app/store";
-import { currentActionType, setNextAction } from "../info/infoSlice";
-import { graphBlock, setMouseDown, setSquare } from "./boardSlice";
+import { currentActionType, Point, selectEnd, selectStart, setNextAction, setStart } from "../info/infoSlice";
+import { graphBlock, selectMouseDown, setMouseDown, setSquare } from "./boardSlice";
+import { cleanPreviewsPoints } from "./squareUtils";
 
 interface Props extends PropsFromRedux {
   className?: string;
@@ -11,28 +12,41 @@ interface Props extends PropsFromRedux {
   col: number;
 }
 
-const classes = {
-  START: "bg-green-500",
-  END: "bg-red-500",
-  WALLS: "bg-gray-500",
-  NONE: "bg-slate-500",
-  PATH: "bg-blue-500",
-  VISITED: "bg-yellow-500",
-  CURRENT: "bg-purple-500",
-};
 
+function getClass(squareState : graphBlock){
+  switch(squareState){
+    case "START":
+      return "bg-green-500"
+    case "END":
+      return "bg-red-500"
+    case "WALLS":
+      return "bg-gray-50"
+    case "NONE":
+      return "bg-slate-500"
+    case "PATH":
+      return "bg-blue-500"
+    case "VISITED":
+      return "bg-yellow-500"
+    case "CURRENT":
+      return "bg-purple-500"
+    case "FINISHED":
+      return "bg-green-500"
+    default:
+      return "bg-slate-500"
+  }
+}
 
 export const square = (props: Props) => {
   const squareState = props.squareState(props.row, props.col);
   return (
     <div
-      className={classes[squareState]}
+      className={getClass(squareState) + " " + "rounded-sm cursor-pointer"}
       onMouseDown={props.setMouseDown}
-      onMouseEnter={() => console.log("mouseEnter")}
+      onMouseEnter={() => props.onMouseEnter(props.row, props.col, props.isMouseDown, props.currentAction)}
       onMouseUp={props.setMouseUp}
-      onClick={() => props.onClick(props.row, props.col, props.currentAction)}
+      onClick={() => props.onClick(props.row, props.col, props.currentAction, props.start, props.end)}
     >
-      {props.row} - {props.col} / {props.squareState(props.row, props.col)}
+      
     </div>
   );
 };
@@ -40,15 +54,24 @@ export const square = (props: Props) => {
 const mapStateToProps = (state: RootState) => ({
   currentAction: state.info.currentAction,
   squareState: (row: number, col: number) => state.board.squares[row][col],
+  start: selectStart(state),
+  end: selectEnd(state),
+  isMouseDown: selectMouseDown(state),
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
   setMouseDown: () => dispatch(setMouseDown(true)),
   setMouseUp: () => dispatch(setMouseDown(false)),
-  onClick: (row: number, col: number, currentAction: currentActionType) => {
+  onClick: (row: number, col: number, currentAction: currentActionType, start: Point, end:Point) => {
     if (currentAction === "NONE") return; // do nothing
-    dispatch(setSquare({ row, col, currentAction })); // set the square
+    cleanPreviewsPoints(dispatch, currentAction, start, end); // clean previews points
+    dispatch(setSquare({ row, col, currentAction })); // set the new point
     dispatch(setNextAction()); // set the next action
+  },
+  onMouseEnter: (row: number, col: number, isMouseDown: boolean, currentAction: currentActionType) => {
+    if(!isMouseDown) return;
+    if(currentAction !== "WALLS") return;
+    dispatch(setSquare({ row, col, currentAction })); // set the new point
   },
 });
 
