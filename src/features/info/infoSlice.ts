@@ -105,6 +105,9 @@ export const infoSlice = createSlice({
     setIsPaused: (state, action: PayloadAction<boolean>) => {
       state.isPaused = action.payload;
     },
+    resetInfo: (state) => {
+      state = initialState;
+    },
   },
 });
 
@@ -120,6 +123,7 @@ export const {
   setIsRunning,
   setIsFinished,
   setIsPaused,
+  resetInfo,
 } = infoSlice.actions;
 
 //selectors 

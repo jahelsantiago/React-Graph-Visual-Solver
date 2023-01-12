@@ -35,10 +35,13 @@ export const boardSlice = createSlice({
     setSquares: (state, action: PayloadAction<graphMatrix>) => {
       state.squares = action.payload;
     },
+    resetBoard: (state) => {
+      state.squares = Array(REACT_APP_ROWS).fill(Array(REACT_APP_COLS).fill("NONE"));
+    },
   },
 });
 
-export const { setMouseDown, setSquare, setSquares } = boardSlice.actions;
+export const { setMouseDown, setSquare, setSquares, resetBoard} = boardSlice.actions;
 
 export const selectMouseDown = (state: RootState) => state.board.mouseDown;
 

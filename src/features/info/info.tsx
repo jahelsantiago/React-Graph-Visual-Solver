@@ -1,11 +1,12 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { AppDispatch, RootState } from "../../app/store";
-import { graphMatrix, setSquares } from "../board/boardSlice";
+import { graphMatrix, resetBoard, setSquares } from "../board/boardSlice";
 import { BFS } from "../board/graphAlgorithms";
 import AlgorithmsFactory from "../board/graphAlgorithms/AlgorithmsFactory";
-import { algorithmsType, selectAlgorithm, selectCurrentAction, setAlgorithm, setCurrentAction, setStart } from "./infoSlice";
+import { algorithmsType, resetInfo, selectAlgorithm, selectCurrentAction, setAlgorithm, setCurrentAction, setStart } from "./infoSlice";
 import StepContainer from "./StepContainer";
+import { VscDebugRestart } from "react-icons/vsc";
 
 interface Props extends PropsFromRedux {
   className?: string;
@@ -14,26 +15,33 @@ interface Props extends PropsFromRedux {
 export const info = (props: Props) => {
 
   return (
-    <aside className={props.className}>
-      <div className="h-full w-full bg-white flex flex-col justify-around px-16">
-        <h1 className="text-4xl text-center py-10 font-bold">
-          Algoritmos en grafos
-        </h1>
+    <aside className={props.className + " " +"flex justify-center"} >
+      <div className="h-full w-full bg-white flex flex-col justify-around max-w-xs">
+        <div className="flex items-center flex-col justify-around">
+          <p>(BETA REALESE)</p>
+          <h1 className="text-4xl text-center py-10 font-bold">
+            Algoritmos en grafos
+          </h1>
+          <VscDebugRestart className="text-5xl hover:text-blue-500 cursor-pointer" onClick={()=>props.resetBoard()}/>
+        </div>
         <StepContainer
           focused={props.currentAction === "START"}
           onStepClick={props.setStart}
+          className="h-24"
         >
           <h2 className="sub-title">Has click sobre un punto de partida</h2>
         </StepContainer>
         <StepContainer
           focused={props.currentAction === "END"}
           onStepClick={props.setEnd}
+          className="h-24"
         >
           <h2 className="sub-title">Has click sobre un punto de llegada</h2>
         </StepContainer>
         <StepContainer
           focused={props.currentAction === "WALLS"}
           onStepClick={props.setWall}
+          className="h-24"
         >
           <h2 className="sub-title">Selecciona las paredes</h2>
         </StepContainer>
@@ -70,6 +78,10 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
   setEnd: () => dispatch(setCurrentAction("END")),
   setWall: () => dispatch(setCurrentAction("WALLS")),
   setAlgorithm: (algorithm : algorithmsType) => dispatch(setAlgorithm(algorithm)),
+  resetBoard: () => {
+    dispatch(resetInfo())
+    dispatch(resetBoard())
+  },
   solvePath: (board: graphMatrix, selectedAlgorithm:algorithmsType) => {
     const steps = AlgorithmsFactory.getStepsList(selectedAlgorithm, board)
     let i = 0 

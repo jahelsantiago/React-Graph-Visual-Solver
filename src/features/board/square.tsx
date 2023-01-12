@@ -20,7 +20,7 @@ function getClass(squareState : graphBlock){
     case "END":
       return "bg-red-500"
     case "WALLS":
-      return "bg-gray-50"
+      return "bg-gray-800"
     case "NONE":
       return "bg-slate-500"
     case "PATH":

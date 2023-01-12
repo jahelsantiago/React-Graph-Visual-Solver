@@ -17,7 +17,7 @@ export default function StepContainer(props: IStepContainerProps) {
     <div
       onClick={props.onStepClick}
       className={
-        "border-2 rounded-xl hover:border-gray-400 cursor-pointer" +
+        "border-2 rounded-xl hover:border-gray-400 cursor-pointer flex items-center justify-center flex-col" +
         "  " +
         (props.focused ? classes.focused : classes.unfocused) +
         " " +
